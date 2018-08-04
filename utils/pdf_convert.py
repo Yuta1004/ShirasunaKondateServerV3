@@ -5,6 +5,9 @@ from pdfminer.pdfpage import PDFPage
 import numpy as np
 import re
 
+from utils.check_type import is_float
+from utils.format import format_date
+
 
 class KondateData:
     def __init__(self, date):
@@ -14,7 +17,7 @@ class KondateData:
         self.lunch = []
         self.lunch_nutritive = []
         self.dinner = []
-        self.dinner.nutritive = []
+        self.dinner_nutritive = []
 
 
 # PDF内のTextBoxを再帰で探す
@@ -89,19 +92,28 @@ def parse_textboxes(text_boxes):
 
 
 def get_kondate_from_parsed_data(year, parsed_data):
+    # KondateData初期化(日付を文字列にする処理を同時に行う)
     week_kondate_data = {}
-
     for key, value in parsed_data.items():
-        str_date = ""
+        week_kondate_data[format_date(year, value[0])] = KondateData(format_date(year, value[0]))
+
+    # 献立を読み込んでいく…
+    for key, value in parsed_data.items():
+        str_date = format_date(year, value[0])
+        read_data = [[], [], [], [], [], []]
         now_read_type = 0  # 0, 2, 4 -> 朝食, 昼食, 夕食 : 1, 3, 5 -> それぞれの栄養値
 
         for item in value:
-            if re.match(r".+月.+日", item):
-                month = item.split("月")[0].zfill(2)
-                day = item.split("月")[1].replace("日", "").zfill(2)
-                str_date = str(year) + month + day
+            # 読み込みデータの種類が変わった時
+            if (is_float(item) and now_read_type % 2 == 0) or (not is_float(item) and now_read_type % 2 == 1):
+                now_read_type += 1
 
-                week_kondate_data[str(year)+month+day] = KondateData(str_date)
+            read_data[now_read_type].append(item)
+
+        read_data[0] = read_data[0][2:]
+
+        print(read_data)
+    print(week_kondate_data)
 
 
 def get_kondate_from_pdf(file_path):
@@ -115,7 +127,7 @@ def get_kondate_from_pdf(file_path):
     with open(file_path, 'rb') as fp:
         interpreter = PDFPageInterpreter(resource_manager, device)
 
-        for page in PDFPage.get_pages(fp, maxpages=0, caching=True, check_extractable=True):
+        for page in PDFPage.get_pages(fp, maxpages=1, caching=True, check_extractable=True):
             interpreter.process_page(page)
             result = device.get_result()
 
