@@ -125,7 +125,7 @@ def get_kondate_from_parsed_data(year, parsed_data):
     return week_kondate_data
 
 
-def get_kondate_from_pdf(file_path):
+def get_kondate_from_pdf(year, month):
     # PDFを解析するために必要
     resource_manager = PDFResourceManager()
     layout_params = LAParams()
@@ -133,6 +133,8 @@ def get_kondate_from_pdf(file_path):
     device = PDFPageAggregator(resource_manager, laparams=layout_params)
 
     # PDFファイルを開いてページ単位で読み込み
+    file_path = "../PDFData/" + str(year) + "/" + str(month).zfill(2) + ".pdf"
+    kondate_data_all = []
     with open(file_path, 'rb') as fp:
         interpreter = PDFPageInterpreter(resource_manager, device)
 
@@ -145,6 +147,7 @@ def get_kondate_from_pdf(file_path):
 
             parsed_data = parse_textboxes(text_boxes)
             kondate_data = get_kondate_from_parsed_data(2018, parsed_data)
+            kondate_data_all.extend(kondate_data)
             #
             # for kondate in kondate_data:
             #     print(kondate.date)
@@ -158,6 +161,8 @@ def get_kondate_from_pdf(file_path):
 
     device.close()
 
+    return kondate_data_all
+
 
 if __name__ == '__main__':
-    get_kondate_from_pdf("../PDFData/07.pdf")
+    print(len(get_kondate_from_pdf(2018, 7)))
