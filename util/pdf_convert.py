@@ -6,6 +6,17 @@ import numpy as np
 import re
 
 
+class KondateData:
+    def __init__(self, date):
+        self.date = date
+        self.breakfast = []
+        self.breakfast_nutritive = []
+        self.lunch = []
+        self.lunch_nutritive = []
+        self.dinner = []
+        self.dinner.nutritive = []
+
+
 # PDF内のTextBoxを再帰で探す
 def find_textbox_recursively(layout_obj):
     if isinstance(layout_obj, LTTextBox):
@@ -19,17 +30,6 @@ def find_textbox_recursively(layout_obj):
         return boxes
 
     return []
-
-
-class KondateData:
-    def __init__(self, date):
-        self.date = date
-        self.breakfast = []
-        self.breakfast_nutritive = []
-        self.lunch = []
-        self.lunch_nutritive = []
-        self.dinner = []
-        self.dinner.nutritive = []
 
 
 def parse_textboxes(text_boxes):
