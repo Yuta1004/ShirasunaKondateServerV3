@@ -88,6 +88,22 @@ def parse_textboxes(text_boxes):
     return parsed_data_dict
 
 
+def get_kondate_from_parsed_data(year, parsed_data):
+    week_kondate_data = {}
+
+    for key, value in parsed_data.items():
+        str_date = ""
+        now_read_type = 0  # 0, 2, 4 -> 朝食, 昼食, 夕食 : 1, 3, 5 -> それぞれの栄養値
+
+        for item in value:
+            if re.match(r".+月.+日", item):
+                month = item.split("月")[0].zfill(2)
+                day = item.split("月")[1].replace("日", "").zfill(2)
+                str_date = str(year) + month + day
+
+                week_kondate_data[str(year)+month+day] = KondateData(str_date)
+
+
 def read_pdf(file_path):
     # PDFを解析するために必要
     resource_manager = PDFResourceManager()
