@@ -3,7 +3,6 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTContainer
 from pdfminer.pdfpage import PDFPage
 import numpy as np
-import re
 
 from utils.check_type import is_float
 from utils.format import format_date
@@ -125,7 +124,7 @@ def get_kondate_from_parsed_data(year, parsed_data):
     return week_kondate_data
 
 
-def get_kondate_from_pdf(year, month):
+def get_kondate_from_pdf(dir, year, month):
     # PDFを解析するために必要
     resource_manager = PDFResourceManager()
     layout_params = LAParams()
@@ -133,7 +132,7 @@ def get_kondate_from_pdf(year, month):
     device = PDFPageAggregator(resource_manager, laparams=layout_params)
 
     # PDFファイルを開いてページ単位で読み込み
-    file_path = "../PDFData/" + str(year) + "/" + str(month).zfill(2) + ".pdf"
+    file_path = dir + "/PDFData/" + str(year) + "/" + str(month).zfill(2) + ".pdf"
     kondate_data_all = []
     with open(file_path, 'rb') as fp:
         interpreter = PDFPageInterpreter(resource_manager, device)
@@ -165,4 +164,4 @@ def get_kondate_from_pdf(year, month):
 
 
 if __name__ == '__main__':
-    print(len(get_kondate_from_pdf(2018, 7)))
+    print(len(get_kondate_from_pdf("..", 2018, 7)))
