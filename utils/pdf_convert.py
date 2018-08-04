@@ -19,6 +19,14 @@ class KondateData:
         self.dinner = []
         self.dinner_nutritive = []
 
+    def set_kondate_data(self, breakfast, breakfast_nutritive, lunch, lunch_nutritive, dinner, dinner_nutritive):
+        self.breakfast.extend(breakfast)
+        self.breakfast_nutritive.extend(breakfast_nutritive)
+        self.lunch.extend(lunch)
+        self.lunch_nutritive.extend(lunch_nutritive)
+        self.dinner.extend(dinner)
+        self.dinner_nutritive.extend(dinner_nutritive)
+
 
 # PDF内のTextBoxを再帰で探す
 def find_textbox_recursively(layout_obj):
@@ -74,13 +82,12 @@ def parse_textboxes(text_boxes):
 
 def get_kondate_from_parsed_data(year, parsed_data):
     # KondateData初期化(日付を文字列にする処理を同時に行う)
-    week_kondate_data = {}
+    week_kondate_data = []
     for value in parsed_data:
-        week_kondate_data[format_date(year, value[0])] = KondateData(format_date(year, value[0]))
+        week_kondate_data.append(KondateData(format_date(year, value[0])))
 
     # 献立を読み込んでいく…
-    for value in parsed_data:
-        str_date = format_date(year, value[0])
+    for idx, value in enumerate(parsed_data):
         read_data = [[], [], [], [], [], []]
         now_read_type = 0  # 0, 2, 4 -> 朝食, 昼食, 夕食 : 1, 3, 5 -> それぞれの栄養値
 
@@ -89,12 +96,33 @@ def get_kondate_from_parsed_data(year, parsed_data):
             if (is_float(item) and now_read_type % 2 == 0) or (not is_float(item) and now_read_type % 2 == 1):
                 now_read_type += 1
 
+            # 読み込みに失敗しているデータがあったら
+            if len(item.split(" ")) >= 2:
+                if now_read_type == 0:
+                    week_kondate_data[idx + 1].breakfast.append(item.split(" ")[1])
+                elif now_read_type == 2:
+                    week_kondate_data[idx + 1].lunch.append(item.split(" ")[1])
+                else:
+                    week_kondate_data[idx + 1].dinner.append(item.split(" ")[1])
+
+                read_data[now_read_type].append(item.split(" ")[0])
+                continue
+
             read_data[now_read_type].append(item)
 
+        # 日付情報が含まれているので除去
         read_data[0] = read_data[0][2:]
 
-        print(read_data)
-    print(week_kondate_data)
+        week_kondate_data[idx].set_kondate_data(
+            breakfast=read_data[0],
+            breakfast_nutritive=read_data[1],
+            lunch=read_data[2],
+            lunch_nutritive=read_data[3],
+            dinner=read_data[4],
+            dinner_nutritive=read_data[5]
+        )
+
+    return week_kondate_data
 
 
 def get_kondate_from_pdf(file_path):
@@ -108,7 +136,7 @@ def get_kondate_from_pdf(file_path):
     with open(file_path, 'rb') as fp:
         interpreter = PDFPageInterpreter(resource_manager, device)
 
-        for page in PDFPage.get_pages(fp, maxpages=1, caching=True, check_extractable=True):
+        for page in PDFPage.get_pages(fp, maxpages=0, caching=True, check_extractable=True):
             interpreter.process_page(page)
             result = device.get_result()
 
@@ -116,9 +144,17 @@ def get_kondate_from_pdf(file_path):
             text_boxes.sort(key=lambda b: (-b.y1, b.x0))
 
             parsed_data = parse_textboxes(text_boxes)
-            get_kondate_from_parsed_data(2018, parsed_data)
-            # for text_box in text_boxes:
-            #     print(text_box)
+            kondate_data = get_kondate_from_parsed_data(2018, parsed_data)
+            #
+            # for kondate in kondate_data:
+            #     print(kondate.date)
+            #     print(kondate.breakfast)
+            #     print(kondate.breakfast_nutritive)
+            #     print(kondate.lunch)
+            #     print(kondate.lunch_nutritive)
+            #     print(kondate.dinner)
+            #     print(kondate.dinner_nutritive)
+            #     print("====================")
 
     device.close()
 
