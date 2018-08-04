@@ -31,25 +31,25 @@ class KondateData:
 
 def parse_textboxes(text_boxes):
     day_of_the_week_name = {
-        0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday", 4: "thursday", 5: "friday", 6: "saturday"
+        0: "monday", 1: "tuesday", 2: "wednesday", 3: "thursday", 4: "friday", 5: "saturday", 6: "sunday"
     }
     raw_data_dict = {
-        "sunday": [],
         "monday": [],
         "tuesday": [],
         "wednesday": [],
         "thursday": [],
         "friday": [],
-        "saturday": []
+        "saturday": [],
+        "sunday": []
     }
     parsed_data_dict = {
-        "sunday": [],
         "monday": [],
         "tuesday": [],
         "wednesday": [],
         "thursday": [],
         "friday": [],
-        "saturday": []
+        "saturday": [],
+        "sunday": []
     }
 
     ng_words = [
