@@ -4,6 +4,7 @@ from pdfminer.layout import LAParams, LTTextBox, LTContainer
 from pdfminer.pdfpage import PDFPage
 
 
+# PDF内のTextBoxを再帰で探す
 def find_textbox_recursively(layout_obj):
     if isinstance(layout_obj, LTTextBox):
         return [layout_obj]
@@ -19,10 +20,12 @@ def find_textbox_recursively(layout_obj):
 
 
 def read_pdf(file_path):
+    # PDFを解析するために必要
     resource_manager = PDFResourceManager()
     layout_params = LAParams(detect_vertical=True)
     device = PDFPageAggregator(resource_manager, laparams=layout_params)
 
+    # PDFファイルを開いてページ単位で読み込み
     with open(file_path, 'rb') as fp:
         interpreter = PDFPageInterpreter(resource_manager, device)
 
