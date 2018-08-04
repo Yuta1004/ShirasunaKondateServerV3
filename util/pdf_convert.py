@@ -3,6 +3,7 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTContainer
 from pdfminer.pdfpage import PDFPage
 import numpy as np
+import re
 
 
 # PDF内のTextBoxを再帰で探す
@@ -21,12 +22,14 @@ def find_textbox_recursively(layout_obj):
 
 
 class KondateData:
-    def __init__(self):
-        self.date = ""
+    def __init__(self, date):
+        self.date = date
         self.breakfast = []
+        self.breakfast_nutritive = []
         self.lunch = []
+        self.lunch_nutritive = []
         self.dinner = []
-        self.nutritive_value = []
+        self.dinner.nutritive = []
 
 
 def parse_textboxes(text_boxes):
@@ -103,7 +106,8 @@ def read_pdf(file_path):
             text_boxes = find_textbox_recursively(result)
             text_boxes.sort(key=lambda b: (-b.y1, b.x0))
 
-            print(parse_textboxes(text_boxes))
+            parsed_data = parse_textboxes(text_boxes)
+            get_kondate_from_parsed_data(2018, parsed_data)
             # for text_box in text_boxes:
             #     print(text_box)
 
