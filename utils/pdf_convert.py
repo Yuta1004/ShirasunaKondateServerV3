@@ -36,27 +36,8 @@ def find_textbox_recursively(layout_obj):
 
 
 def parse_textboxes(text_boxes):
-    day_of_the_week_name = {
-        0: "monday", 1: "tuesday", 2: "wednesday", 3: "thursday", 4: "friday", 5: "saturday", 6: "sunday"
-    }
-    raw_data_dict = {
-        "monday": [],
-        "tuesday": [],
-        "wednesday": [],
-        "thursday": [],
-        "friday": [],
-        "saturday": [],
-        "sunday": []
-    }
-    parsed_data_dict = {
-        "monday": [],
-        "tuesday": [],
-        "wednesday": [],
-        "thursday": [],
-        "friday": [],
-        "saturday": [],
-        "sunday": []
-    }
+    raw_data_dict = [[], [], [], [], [], [], []]
+    parsed_data_dict = [[], [], [], [], [], [], []]
 
     ng_words = [
         "栄養価 熱量(kcal) 蛋白質(g) 脂質(g) 炭水化物(g) 塩分(g) 熱量(kcal) 蛋白質(g) 脂質(g) 炭水化物(g) 塩分(g) 熱量(kcal) 蛋白質(g) 脂質(g) 炭水化物(g) "
@@ -79,14 +60,14 @@ def parse_textboxes(text_boxes):
     search_base_x = np.array([90, 240, 310, 430, 540, 650, 760])
     for text_box in text_boxes:
         idx = np.abs(search_base_x - text_box.x0).argmin()
-        raw_data_dict[day_of_the_week_name[idx]].append(text_box)
+        raw_data_dict[idx].append(text_box)
 
     # NGワード除外
-    for key, item in raw_data_dict.items():
+    for idx, item in enumerate(raw_data_dict):
         for text_box in item:
             text_box_value = text_box.get_text().replace("\n", "")
             if text_box_value not in ng_words:
-                parsed_data_dict[key].append(text_box_value)
+                parsed_data_dict[idx].append(text_box_value)
 
     return parsed_data_dict
 
@@ -94,11 +75,11 @@ def parse_textboxes(text_boxes):
 def get_kondate_from_parsed_data(year, parsed_data):
     # KondateData初期化(日付を文字列にする処理を同時に行う)
     week_kondate_data = {}
-    for key, value in parsed_data.items():
+    for value in parsed_data:
         week_kondate_data[format_date(year, value[0])] = KondateData(format_date(year, value[0]))
 
     # 献立を読み込んでいく…
-    for key, value in parsed_data.items():
+    for value in parsed_data:
         str_date = format_date(year, value[0])
         read_data = [[], [], [], [], [], []]
         now_read_type = 0  # 0, 2, 4 -> 朝食, 昼食, 夕食 : 1, 3, 5 -> それぞれの栄養値
