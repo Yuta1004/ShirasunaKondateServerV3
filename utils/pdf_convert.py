@@ -104,7 +104,7 @@ def get_kondate_from_parsed_data(year, parsed_data):
                 week_kondate_data[str(year)+month+day] = KondateData(str_date)
 
 
-def read_pdf(file_path):
+def get_kondate_from_pdf(file_path):
     # PDFを解析するために必要
     resource_manager = PDFResourceManager()
     layout_params = LAParams()
@@ -131,4 +131,4 @@ def read_pdf(file_path):
 
 
 if __name__ == '__main__':
-    read_pdf("../PDFData/07.pdf")
+    get_kondate_from_pdf("../PDFData/07.pdf")
