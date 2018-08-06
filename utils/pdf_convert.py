@@ -64,7 +64,7 @@ def parse_textboxes(text_boxes):
     ]
 
     # 座標をもとにTextBoxを7つに分類する(日 月 ... 土)
-    search_base_x = np.array([90, 240, 310, 430, 540, 650, 760])
+    search_base_x = np.array([70, 220, 310, 420, 530, 650, 760])
     for text_box in text_boxes:
         idx = np.abs(search_base_x - text_box.x0).argmin()
         raw_data_dict[idx].append(text_box)
