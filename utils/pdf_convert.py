@@ -3,6 +3,7 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTContainer
 from pdfminer.pdfpage import PDFPage
 import numpy as np
+import os
 
 from utils.check_type import is_float
 from utils.format import format_date
@@ -133,6 +134,9 @@ def get_kondate_from_pdf(dir, year, month):
 
     # PDFファイルを開いてページ単位で読み込み
     file_path = dir + "/PDFData/" + str(year) + "/" + str(month).zfill(2) + ".pdf"
+    if not os.path.exists(file_path):
+        raise FileNotFoundError("指定された年月のPDFファイルが存在しません．")
+
     kondate_data_all = []
     with open(file_path, 'rb') as fp:
         interpreter = PDFPageInterpreter(resource_manager, device)
