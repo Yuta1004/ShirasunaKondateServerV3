@@ -1,0 +1,15 @@
+* kondate.db
+    - breakfast (table)
+        - date           INTEGER PRIMARY KEY
+        - menu_list      TEXT NOT NULL
+        - nutritive_list TEXT NOT NULL
+
+    - lunch (table)
+        - date           INTEGER PRIMARY KEY
+        - menu_list      TEXT NOT NULL
+        - nutritive_list TEXT NOT NULL
+
+    - dinner (table)
+        - date           INTEGER PRIMARY KEY
+        - menu_list      TEXT NOT NULL
+        - nutritive_list TEXT NOT NULL
