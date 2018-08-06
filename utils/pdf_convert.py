@@ -149,18 +149,8 @@ def get_kondate_from_pdf(dir, year, month):
             text_boxes.sort(key=lambda b: (-b.y1, b.x0))
 
             parsed_data = parse_textboxes(text_boxes)
-            kondate_data = get_kondate_from_parsed_data(2018, parsed_data)
+            kondate_data = get_kondate_from_parsed_data(year, parsed_data)
             kondate_data_all.extend(kondate_data)
-            #
-            # for kondate in kondate_data:
-            #     print(kondate.date)
-            #     print(kondate.breakfast)
-            #     print(kondate.breakfast_nutritive)
-            #     print(kondate.lunch)
-            #     print(kondate.lunch_nutritive)
-            #     print(kondate.dinner)
-            #     print(kondate.dinner_nutritive)
-            #     print("====================")
 
     device.close()
 
