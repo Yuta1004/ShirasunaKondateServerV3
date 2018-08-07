@@ -56,6 +56,10 @@ def parse_textboxes(text_boxes):
         "塩分(g) 熱量(kcal) 蛋白質(g) 脂質(g) 炭水化物(g) 塩分(g)",
         "日 曜",
         "日",
+        "朝食",
+        "昼食",
+        "夕食",
+        "曜日",
         "朝 食",
         "昼 食",
         "夕 食",
@@ -64,10 +68,23 @@ def parse_textboxes(text_boxes):
         "・"
     ]
 
-    # 座標をもとにTextBoxを7つに分類する(日 月 ... 土)
-    search_base_x = np.array([70, 220, 310, 420, 530, 650, 760])
+    # 基準となる座標を取得する
+    # ファイルによって座標が異なるので特定のワードを含む文字列をヘッダー座標として取得する
+    search_base_x = []
     for text_box in text_boxes:
-        idx = np.abs(search_base_x - text_box.x0).argmin()
+        if (text_box.get_text() == "・\n" or "･" in text_box.get_text() or "菓子パン" in text_box.get_text() or "閉寮" in text_box.get_text()) \
+                and len(search_base_x) < 7:
+            search_base_x.append(int((text_box.x0+text_box.x1)/2))
+
+    # 特定文字列が存在しない場合は座標をセットする
+    if len(search_base_x) == 0:
+        search_base_x = [93, 206, 319, 432, 545, 657, 770]
+
+    # 座標をもとにTextBoxを7つに分類する(日 月 ... 土)
+    search_base_x = np.array(search_base_x)
+    for text_box in text_boxes:
+        # print(text_box.x0, text_box.x1, (text_box.x0+text_box.x1)/2, "+" + text_box.get_text() + "+")
+        idx = np.abs(search_base_x - (text_box.x0+text_box.x1)/2).argmin()
         raw_data_dict[idx].append(text_box)
 
     # NGワード除外
@@ -84,12 +101,16 @@ def get_kondate_from_parsed_data(year, parsed_data):
     # KondateData初期化(日付を文字列にする処理を同時に行う)
     week_kondate_data = []
     for value in parsed_data:
-        week_kondate_data.append(KondateData(format_date(year, value[0])))
+        if len(value) != 0:
+            week_kondate_data.append(KondateData(format_date(year, value[0])))
 
     # 献立を読み込んでいく…
     for idx, value in enumerate(parsed_data):
         read_data = [[], [], [], [], [], []]
         now_read_type = 0  # 0, 2, 4 -> 朝食, 昼食, 夕食 : 1, 3, 5 -> それぞれの栄養値
+
+        if len(value) == 0:
+            continue
 
         for item in value:
             # 読み込みデータの種類が変わった時
@@ -97,7 +118,7 @@ def get_kondate_from_parsed_data(year, parsed_data):
                 now_read_type += 1
 
             # 読み込みに失敗しているデータがあったら
-            if len(item.split(" ")) >= 2:
+            if len(item.split(" ")) >= 2 and idx < 6:
                 if now_read_type == 0:
                     week_kondate_data[idx + 1].breakfast.append(item.split(" ")[1])
                 elif now_read_type == 2:
