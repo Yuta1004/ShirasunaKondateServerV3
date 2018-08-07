@@ -26,3 +26,11 @@ def christian_to_japanese(christian_era, month):
         japanese_date = japanese_calendar_dict["HEISEI_NO_TSUGI"] + str(christian_era - 2018)
 
     return japanese_date
+
+
+def list_to_plaintext(arg_list, splitter=";"):
+    plaintext = ""
+    for item in arg_list:
+        plaintext += item + splitter
+
+    return plaintext
