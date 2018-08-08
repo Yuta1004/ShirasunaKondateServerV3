@@ -34,3 +34,11 @@ def list_to_plaintext(arg_list, splitter=";"):
         plaintext += item + splitter
 
     return plaintext
+
+
+def plaintext_to_list(plaintext, splitter=";"):
+    ret_list = []
+    for item in plaintext.split(splitter):
+        ret_list.append(item)
+
+    return ret_list[:-1]
