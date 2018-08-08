@@ -1,5 +1,6 @@
 import sqlite3
 import datetime
+from dateutil.relativedelta import relativedelta
 import os
 
 from utils.download_kondate_pdf import download_kondate_pdf
@@ -63,8 +64,15 @@ def kondate_data_save_to_db(year=None, month=None):
 
 
 if __name__ == '__main__':
-    try:
-        kondate_data_save_to_db(None, None)
-        print("Success Save to DB")
-    except ValueError:
-        print("ValueError")
+    today = datetime.datetime.today()
+    next_month = today + relativedelta(months=1)
+
+    years = [today.year, next_month.year]
+    months = [today.month, next_month.month]
+
+    for year, month in zip(years, months):
+        try:
+            kondate_data_save_to_db(year, month)
+            print("Success Save to DB: ", year, month)
+        except ValueError:
+            print("ValueError")
