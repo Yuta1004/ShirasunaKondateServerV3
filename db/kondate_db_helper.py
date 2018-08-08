@@ -65,6 +65,9 @@ class KondateDBHelper:
 
 # PDFによっては栄養情報の並び順がおかしくなるのでこの関数で修正する
 def format_nutritive_list(nutritive_list):
+    if len(nutritive_list) < 2:
+        return nutritive_list
+
     if int(nutritive_list[1]) > 100:
         tmp = nutritive_list[0]
         nutritive_list[:3] = nutritive_list[1:4]
