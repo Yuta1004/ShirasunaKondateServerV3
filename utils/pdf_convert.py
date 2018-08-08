@@ -3,6 +3,7 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTContainer
 from pdfminer.pdfpage import PDFPage
 import numpy as np
+import re
 import os
 
 from utils.check_type import is_float
@@ -72,8 +73,7 @@ def parse_textboxes(text_boxes):
     # ファイルによって座標が異なるので特定のワードを含む文字列をヘッダー座標として取得する
     search_base_x = []
     for text_box in text_boxes:
-        if (text_box.get_text() == "・\n" or "･" in text_box.get_text() or "菓子パン" in text_box.get_text() or "閉寮" in text_box.get_text()) \
-                and len(search_base_x) < 7:
+        if re.match(r".*月.*日\n", text_box.get_text()) and len(search_base_x) < 7:
             search_base_x.append(int((text_box.x0+text_box.x1)/2))
 
     # 特定文字列が存在しない場合は座標をセットする
@@ -114,11 +114,11 @@ def get_kondate_from_parsed_data(year, parsed_data):
 
         for item in value:
             # 読み込みデータの種類が変わった時
-            if (is_float(item) and now_read_type % 2 == 0) or (not is_float(item) and now_read_type % 2 == 1):
+            if (is_float(item.split(" ")[0]) and now_read_type % 2 == 0) or (not is_float(item.split(" ")[0]) and now_read_type % 2 == 1):
                 now_read_type += 1
 
             # 読み込みに失敗しているデータがあったら
-            if len(item.split(" ")) >= 2 and idx < 6:
+            if len(item.split(" ")) >= 2 and idx < len(week_kondate_data)-1 and now_read_type % 2 == 0:
                 if now_read_type == 0:
                     week_kondate_data[idx + 1].breakfast.append(item.split(" ")[1])
                 elif now_read_type == 2:
