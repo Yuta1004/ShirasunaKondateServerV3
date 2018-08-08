@@ -7,7 +7,11 @@ from utils.check_type import is_float
 base_url = ""
 
 app = Flask(__name__)
-app.config['JSON_AS_ASCII'] = False
+
+
+@app.before_request
+def before_request():
+    app.config['JSON_AS_ASCII'] = True
 
 
 @app.route(base_url + "/")
@@ -20,6 +24,13 @@ def get_kondate():
     year = request.args.get("year", None)
     month = request.args.get("month", None)
     day = request.args.get("day", None)
+    non_ascii = request.args.get("ascii", None)
+
+    # APIを叩く時にasciiをFalseにするとUTF-8にエンコーディングしてブラウザ上に表示する
+    # 通常はASCIIで返す
+    # ブラウザデバッグ用の引数．ASCIIではないjsonは構文エラーを引き起こす可能性がある!!
+    if non_ascii == "False":
+        app.config['JSON_AS_ASCII'] = False
 
     if (year is None) or (month is None) or (day is None):
         return jsonify({"code": 400, "error": "Bad Request. Arguments is missing."})
