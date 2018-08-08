@@ -35,10 +35,10 @@ class KondateDBHelper:
             nutritive_from_db = self.cur.execute(query, (str_date,)).fetchone()
 
             nutritive_from_db = plaintext_to_list(nutritive_from_db[0])
-            nutritive_list = format_nutritive_list(nutritive_from_db)
+            nutritive_list = alignment_nutritive_list(nutritive_from_db)
 
             kondate_data[time]["menu_list"] = plaintext_to_list(menu_from_db[0])
-            kondate_data[time]["nutritive_list"] = nutritive_list
+            kondate_data[time]["nutritive_list"] = format_nutritive_list(nutritive_list)
 
         return kondate_data
 
@@ -64,13 +64,28 @@ class KondateDBHelper:
 
 
 # PDFによっては栄養情報の並び順がおかしくなるのでこの関数で修正する
-def format_nutritive_list(nutritive_list):
+def alignment_nutritive_list(nutritive_list):
     if len(nutritive_list) < 2:
         return nutritive_list
 
-    if int(nutritive_list[1]) > 100:
+    if float(nutritive_list[1]) > 100:
         tmp = nutritive_list[0]
         nutritive_list[:3] = nutritive_list[1:4]
         nutritive_list[3] = tmp
 
     return nutritive_list
+
+
+# 栄養情報(リスト)を辞書にして返す
+# この関数はalignment_nutritive_listを呼んでから実行すること!!!!
+def format_nutritive_list(nutritive_list):
+    if len(nutritive_list) < 5:
+        return {}
+
+    return {
+        "calorie": nutritive_list[0],
+        "protein": nutritive_list[1],
+        "lipid": nutritive_list[2],
+        "carbohydrate": nutritive_list[3],
+        "salt": nutritive_list[4]
+    }
