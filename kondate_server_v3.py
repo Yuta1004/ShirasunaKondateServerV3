@@ -41,5 +41,17 @@ def get_kondate():
     return jsonify(kondate_data)
 
 
+@app.route("/search_kondate")
+def search_kondate():
+    search_word = request.args.get("keyword", None)
+
+    if search_word is None:
+        return jsonify({"code": 400, "error": "Bad Request. Arguments is missing."})
+
+    helper = KondateDBHelper()
+
+    return jsonify(helper.search_kondate_data(search_word))
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=410)
