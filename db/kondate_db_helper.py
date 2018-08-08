@@ -60,17 +60,22 @@ class KondateDBHelper:
     # {"20181004": ["breakfast", "lunch"], "20181204": ["dinner"]}
     def search_kondate_data(self, search_menu):
         result_dict = {}
+        hit_dates = []
 
         for time in ["breakfast", "lunch", "dinner"]:
             query = "SELECT date FROM {} WHERE menu_list LIKE ?".format(time)
             result = self.cur.execute(query, ("%"+search_menu+"%", )).fetchall()
 
             for date in result:
-                date = date[0]
+                date = str(date[0])
                 if date not in result_dict.keys():
                     result_dict[date] = []
                 result_dict[date].append(time)
 
+                if date not in hit_dates:
+                    hit_dates.append(date)
+
+        result_dict["hit_dates"] = hit_dates
         return result_dict
 
     def db_connect_close(self):
