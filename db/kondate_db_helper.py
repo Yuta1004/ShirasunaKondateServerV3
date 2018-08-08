@@ -30,12 +30,15 @@ class KondateDBHelper:
 
         for time in ["breakfast", "lunch", "dinner"]:
             query = "SELECT menu_list FROM {} WHERE date=?".format(time)
-            menu_from_db = self.cur.execute(query, (str_date, )).fetchone()
+            menu_from_db = self.cur.execute(query, (str_date,)).fetchone()
             query = "SELECT nutritive_list FROM {} WHERE date=?".format(time)
-            nutritive_from_db = self.cur.execute(query, (str_date, )).fetchone()
+            nutritive_from_db = self.cur.execute(query, (str_date,)).fetchone()
+
+            nutritive_from_db = plaintext_to_list(nutritive_from_db[0])
+            nutritive_list = format_nutritive_list(nutritive_from_db)
 
             kondate_data[time]["menu_list"] = plaintext_to_list(menu_from_db[0])
-            kondate_data[time]["nutritive_list"] = plaintext_to_list(nutritive_from_db[0])
+            kondate_data[time]["nutritive_list"] = nutritive_list
 
         return kondate_data
 
@@ -45,7 +48,7 @@ class KondateDBHelper:
         ret_flag = True
         for time in ["breakfast", "lunch", "dinner"]:
             query = "SELECT * FROM {} WHERE date=?".format(time)
-            exsits = self.cur.execute(query, (str_date, )).fetchmany()
+            exsits = self.cur.execute(query, (str_date,)).fetchmany()
 
             if len(exsits) == 0:
                 ret_flag = False
@@ -55,3 +58,13 @@ class KondateDBHelper:
     def db_connect_close(self):
         self.cur.close()
         self.connect.close()
+
+
+# PDFによっては栄養情報の並び順がおかしくなるのでこの関数で修正する
+def format_nutritive_list(nutritive_list):
+    if int(nutritive_list[1]) > 100:
+        tmp = nutritive_list[0]
+        nutritive_list[:3] = nutritive_list[1:4]
+        nutritive_list[3] = tmp
+
+    return nutritive_list
