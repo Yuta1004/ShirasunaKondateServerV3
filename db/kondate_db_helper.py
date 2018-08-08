@@ -59,6 +59,9 @@ class KondateDBHelper:
         self.cur.close()
         self.connect.close()
 
+    def __del__(self):
+        self.db_connect_close()
+
 
 # PDFによっては栄養情報の並び順がおかしくなるのでこの関数で修正する
 def format_nutritive_list(nutritive_list):
