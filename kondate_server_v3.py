@@ -4,16 +4,18 @@ import json
 from db.kondate_db_helper import KondateDBHelper
 from utils.check_type import is_float
 
+base_url = ""
+
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 
-@app.route("/")
+@app.route(base_url + "/")
 def index():
     return "Welcome to *-*-*-*-Shirasuna Kondate Server Ver.3-*-*-*-*"
 
 
-@app.route("/get_kondate", methods=["GET", "POST"])
+@app.route(base_url + "/get_kondate", methods=["GET", "POST"])
 def get_kondate():
     year = request.args.get("year", None)
     month = request.args.get("month", None)
