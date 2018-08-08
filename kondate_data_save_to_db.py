@@ -63,9 +63,8 @@ def kondate_data_save_to_db(year=None, month=None):
 
 
 if __name__ == '__main__':
-    year_arg = 2018
-    month_arg = 8
     try:
-        kondate_data_save_to_db(year_arg, month_arg)
+        kondate_data_save_to_db(None, None)
+        print("Success Save to DB")
     except ValueError:
-        print("ValueError: ", year_arg, month_arg)
+        print("ValueError")
