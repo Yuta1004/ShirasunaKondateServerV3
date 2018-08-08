@@ -9,7 +9,7 @@ from utils.format import list_to_plaintext
 
 def kondate_data_save_to_db(year=None, month=None):
     now_date = datetime.datetime.now()
-    if year is None or year < 2017:
+    if year is None:
         year = now_date.year
     if month is None:
         month = now_date.month
