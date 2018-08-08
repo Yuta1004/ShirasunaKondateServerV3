@@ -2,7 +2,7 @@ import sqlite3
 import datetime
 import os
 
-from download_kondate_pdf import download_kondate_pdf
+from utils.download_kondate_pdf import download_kondate_pdf
 from utils.pdf_convert import get_kondate_from_pdf
 from utils.format import list_to_plaintext
 
