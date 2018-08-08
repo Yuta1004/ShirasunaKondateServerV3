@@ -55,6 +55,24 @@ class KondateDBHelper:
 
         return ret_flag
 
+    # 献立検索
+    # リザルト例 2018年10月4日の朝食・昼食, 2018年12月4日の夕食に見つかった場合
+    # {"20181004": ["breakfast", "lunch"], "20181204": ["dinner"]}
+    def search_kondate_data(self, search_menu):
+        result_dict = {}
+
+        for time in ["breakfast", "lunch", "dinner"]:
+            query = "SELECT date FROM {} WHERE menu_list LIKE ?".format(time)
+            result = self.cur.execute(query, ("%"+search_menu+"%", )).fetchall()
+
+            for date in result:
+                date = date[0]
+                if date not in result_dict.keys():
+                    result_dict[date] = []
+                result_dict[date].append(time)
+
+        return result_dict
+
     def db_connect_close(self):
         self.cur.close()
         self.connect.close()
