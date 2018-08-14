@@ -75,7 +75,6 @@ class KondateDBHelper:
                 if date not in hit_dates:
                     hit_dates.append(date)
 
-        result_dict["hit_dates"] = hit_dates
         return result_dict
 
     def db_connect_close(self):
