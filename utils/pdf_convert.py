@@ -83,9 +83,13 @@ def parse_textboxes(text_boxes):
     # 座標をもとにTextBoxを7つに分類する(日 月 ... 土)
     search_base_x = np.array(search_base_x)
     for text_box in text_boxes:
-        # print(text_box.x0, text_box.x1, (text_box.x0+text_box.x1)/2, "+" + text_box.get_text() + "+")
-        idx = np.abs(search_base_x - (text_box.x0+text_box.x1)/2).argmin()
-        raw_data_dict[idx].append(text_box)
+        # 2つのTextBoxを連結して読み込んでいたときは別処理
+        if abs(text_box.x1 - text_box.x0) >= 150:
+            idx = np.abs(search_base_x - ((text_box.x0+text_box.x1)/2-50)).argmin()
+        else:
+            idx = np.abs(search_base_x - (text_box.x0+text_box.x1)/2).argmin()
+
+        raw_data_dict[max(0, idx)].append(text_box)
 
     # NGワード除外
     for idx, item in enumerate(raw_data_dict):
