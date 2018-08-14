@@ -52,11 +52,7 @@ def kondate_data_save_to_db(year=None, month=None):
             menu = list_to_plaintext(kondate_data_dict[table_name]["menu"], ";")
             nutritive = list_to_plaintext(kondate_data_dict[table_name]["nutritive"], ";")
 
-            date_exists = cur.execute("""SELECT * FROM {} WHERE date=?""".format(table_name), (date, )).fetchmany()
-            if len(date_exists) > 0:
-                continue
-
-            cur.execute("""INSERT INTO {} VALUES (?, ?, ?)""".format(table_name), (date, menu, nutritive))
+            cur.execute("""REPLACE INTO {} VALUES (?, ?, ?)""".format(table_name), (date, menu, nutritive))
 
             connect.commit()
     cur.close()
