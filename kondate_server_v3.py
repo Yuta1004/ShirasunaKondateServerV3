@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request
 import json
 
-from db.kondate_db_helper import KondateDBHelper
-from utils.check_type import is_float
+from DB.kondate_db_helper import KondateDBHelper
+from Utils.check_type import is_float
 
 base_url = ""
 

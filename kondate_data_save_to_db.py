@@ -3,9 +3,9 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import os
 
-from utils.download_kondate_pdf import download_kondate_pdf
-from utils.pdf_convert import get_kondate_from_pdf
-from utils.format import list_to_plaintext
+from Utils.download_kondate_pdf import download_kondate_pdf
+from Utils.pdf_convert import get_kondate_from_pdf
+from Utils.format import list_to_plaintext
 
 
 def kondate_data_save_to_db(year=None, month=None):
@@ -23,7 +23,7 @@ def kondate_data_save_to_db(year=None, month=None):
 
     kondate_all_data = get_kondate_from_pdf(par_dir, year, month)
 
-    connect = sqlite3.connect(par_dir + "/db/kondate.db")
+    connect = sqlite3.connect(par_dir + "/DB/kondate.db")
     cur = connect.cursor()
 
     # 献立データをforで回してDBに登録していく…
