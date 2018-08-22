@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
-import json
+import datetime
 
 from DB.kondate_db_helper import KondateDBHelper
+from DB.requests_db_helper import RequestsDBHelper
 from Utils.check_type import is_float
 
 base_url = ""
@@ -62,6 +63,16 @@ def search_kondate():
     helper = KondateDBHelper()
 
     return jsonify(helper.search_kondate_data(search_word))
+
+
+@app.route("/request_send")
+def request_send():
+    request_body = request.args.get("body", None)
+
+    helper = RequestsDBHelper()
+    helper.save_requests(str(datetime.datetime.today()), request_body)
+
+    return ""
 
 
 if __name__ == '__main__':
