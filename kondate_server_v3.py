@@ -4,6 +4,7 @@ import datetime
 from DB.kondate_db_helper import KondateDBHelper
 from DB.requests_db_helper import RequestsDBHelper
 from Utils.check_type import is_float
+from kondate_data_save_to_db import kondate_data_save_to_db_now
 
 base_url = "/shirasuna_kondate_v3"
 
@@ -72,6 +73,13 @@ def request_send():
     helper = RequestsDBHelper()
     helper.save_requests(str(datetime.datetime.today()), request_body)
 
+    return ""
+
+
+@app.route(base_url + "/refresh_kondate_data")
+def refresh_kondate_data():
+    kondate_data_save_to_db_now(varbose=False)
+    
     return ""
 
 
