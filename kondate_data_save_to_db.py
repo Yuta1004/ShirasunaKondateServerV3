@@ -59,7 +59,7 @@ def kondate_data_save_to_db(year=None, month=None):
     connect.close()
 
 
-if __name__ == '__main__':
+def kondate_data_save_to_db_now(varbose=True):
     today = datetime.datetime.today()
     next_month = today + relativedelta(months=1)
 
@@ -69,6 +69,10 @@ if __name__ == '__main__':
     for year, month in zip(years, months):
         try:
             kondate_data_save_to_db(year, month)
-            print("Success Save to DB: ", year, month)
+            if varbose: print("Success Save to DB: ", year, month)
         except ValueError:
-            print("ValueError")
+            if varbose: print("ValueError")
+
+
+if __name__ == '__main__':
+    kondate_data_save_to_db_now(varbose=True)
