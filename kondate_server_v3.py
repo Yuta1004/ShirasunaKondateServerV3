@@ -5,7 +5,7 @@ from DB.kondate_db_helper import KondateDBHelper
 from DB.requests_db_helper import RequestsDBHelper
 from Utils.check_type import is_float
 
-base_url = ""
+base_url = "/shirasuna_kondate_v3"
 
 app = Flask(__name__)
 
@@ -53,7 +53,7 @@ def get_kondate():
     return jsonify(kondate_data)
 
 
-@app.route("/search_kondate")
+@app.route(base_url + "/search_kondate")
 def search_kondate():
     search_word = request.args.get("keyword", None)
 
@@ -65,7 +65,7 @@ def search_kondate():
     return jsonify(helper.search_kondate_data(search_word))
 
 
-@app.route("/request_send")
+@app.route(base_url + "/request_send")
 def request_send():
     request_body = request.args.get("body", None)
 
