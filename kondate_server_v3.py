@@ -83,7 +83,7 @@ def refresh_kondate_data():
     return ""
 
 
-@app.route(base_url + "/googlehome")
+@app.route(base_url + "/googlehome", methods=["POST"])
 def googlehome():
     request_dict = request.json
     print(request_dict["responseId"])
