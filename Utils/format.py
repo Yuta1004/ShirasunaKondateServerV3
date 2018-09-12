@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def format_date(year, month_and_day_str):
     month = month_and_day_str.split("月")[0].zfill(2)
     day = month_and_day_str.split("月")[1].replace("日", "").zfill(2)
@@ -42,3 +44,7 @@ def plaintext_to_list(plaintext, splitter=";"):
         ret_list.append(item)
 
     return ret_list[:-1]
+
+
+def timestr_to_date(time_str):
+    return datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S+09:00")

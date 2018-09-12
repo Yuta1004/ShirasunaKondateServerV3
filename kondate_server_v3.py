@@ -4,6 +4,8 @@ import datetime
 from DB.kondate_db_helper import KondateDBHelper
 from DB.requests_db_helper import RequestsDBHelper
 from Utils.check_type import is_float
+from Utils.format import timestr_to_date
+from Utils.googlehome import get_read_kondate_txt
 from kondate_data_save_to_db import kondate_data_save_to_db_now
 
 base_url = "/shirasuna_kondate_v3"
@@ -85,10 +87,18 @@ def refresh_kondate_data():
 
 @app.route(base_url + "/googlehome", methods=["POST"])
 def googlehome():
-    request_dict = request.json
-    print(request_dict["responseId"])
+    types = {"朝食": 0, "朝": 0, "昼食": 1, "昼": 1, "夕食": 2, "夜": 2, "夕": 2, "": 3}
 
-    return jsonify({"fulfillmentText": "サーバ接続テスト"})
+    request_dict = request.json
+    parameters = request_dict["queryResult"]["parameters"]
+    date = timestr_to_date(parameters["date"])
+    _type = types[parameters["any"]]
+
+    year, month, day = date.year, date.month, date.day
+    read_txt = get_read_kondate_txt(year, month, day, _type)
+
+    return jsonify({"fulfillmentText": read_txt})
+
 
 
 if __name__ == '__main__':
