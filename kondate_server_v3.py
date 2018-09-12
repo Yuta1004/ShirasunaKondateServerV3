@@ -83,5 +83,13 @@ def refresh_kondate_data():
     return ""
 
 
+@app.route(base_url + "/googlehome")
+def googlehome():
+    request_dict = request.json
+    print(request_dict["responseId"])
+
+    return jsonify({"fulfillmentText": "サーバ接続テスト"})
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=410)
