@@ -87,12 +87,19 @@ def refresh_kondate_data():
 
 @app.route(base_url + "/googlehome", methods=["POST"])
 def googlehome():
-    types = {"朝食": 0, "朝": 0, "昼食": 1, "昼": 1, "夕食": 2, "夜": 2, "夕": 2, "": 3}
-
     request_dict = request.json
     parameters = request_dict["queryResult"]["parameters"]
     date = timestr_to_date(parameters["date"])
-    _type = types[parameters["any"]]
+    
+    type_str = parameters["any"]
+    if "朝" in type_str:
+        _type = 0
+    elif "昼" in type_str:
+        _type = 1
+    elif ("夕" in type_str) or ("夜" in type_str):
+        _type = 2
+    else:
+        _type = 3
 
     year, month, day = date.year, date.month, date.day
     read_txt = get_read_kondate_txt(year, month, day, _type)
