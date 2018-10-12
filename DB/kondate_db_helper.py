@@ -104,6 +104,8 @@ def format_nutritive_list(nutritive_list):
     if len(nutritive_list) < 5:
         return {}
 
+    nutritive_list = [float(elem) for elem in nutritive_list]
+
     return {
         "calorie": nutritive_list[0],
         "protein": nutritive_list[1],
