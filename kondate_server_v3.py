@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import datetime
 
+from line_notify import line_notify
 from DB.kondate_db_helper import KondateDBHelper
 from DB.requests_db_helper import RequestsDBHelper
 from Utils.check_type import is_float
@@ -75,6 +76,7 @@ def request_send():
     helper = RequestsDBHelper()
     helper.save_requests(str(datetime.datetime.today()), request_body)
 
+    line_notify("献立アプリにメッセージが届きました．\n時刻: " +  str(datetime.datetime.today()) + "\n内容: " + request_body)
     return ""
 
 
