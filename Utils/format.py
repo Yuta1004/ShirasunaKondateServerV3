@@ -11,7 +11,7 @@ def format_date(year, month_and_day_str):
 def christian_to_japanese(christian_era, month):
     japanese_calendar_dict = {
         "HEISEI": "h",
-        "HEISEI_NO_TSUGI": "a"
+        "REIWA": "r"
     }
 
     if christian_era < 1989:
@@ -23,9 +23,9 @@ def christian_to_japanese(christian_era, month):
         if month <= 4:
             japanese_date = japanese_calendar_dict["HEISEI"] + str(christian_era - 1988)
         else:
-            japanese_date = japanese_calendar_dict["HEISEI_NO_TSUGI"] + str(christian_era - 2018)
+            japanese_date = japanese_calendar_dict["REIWA"] + str(christian_era - 2018)
     else:
-        japanese_date = japanese_calendar_dict["HEISEI_NO_TSUGI"] + str(christian_era - 2018)
+        japanese_date = japanese_calendar_dict["REIWA"] + str(christian_era - 2018)
 
     return japanese_date
 
