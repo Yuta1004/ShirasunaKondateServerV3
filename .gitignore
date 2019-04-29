@@ -1,0 +1,5 @@
+/TestScripts
+/PDFData
+*.db
+__pycache__/
+.idea/
