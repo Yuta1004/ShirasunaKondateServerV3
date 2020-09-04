@@ -134,7 +134,8 @@ def get_kondate_from_parsed_data(year, parsed_data):
                 read_data[now_read_type].append(item.split(" ")[0])
                 continue
 
-            read_data[now_read_type].append(item)
+            if now_read_type <= 5:
+                read_data[now_read_type].append(item)
 
         # 日付情報が含まれているので除去
         read_data[0] = read_data[0][2:]
